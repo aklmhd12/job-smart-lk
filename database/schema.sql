@@ -1,0 +1,31 @@
+CREATE TABLE IF NOT EXISTS users(
+  user_id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(150) UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  account_type VARCHAR(30) NOT NULL DEFAULT 'user',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS jobs(
+  job_id SERIAL PRIMARY KEY,
+  posted_by INT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+  title VARCHAR(200) NOT NULL,
+  description TEXT,
+  hourly_rate NUMERIC(12,2),
+  approval_status VARCHAR(30) NOT NULL DEFAULT 'pending'
+);
+
+CREATE TABLE IF NOT EXISTS wallets(
+  wallet_id SERIAL PRIMARY KEY,
+  user_id INT UNIQUE NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+  balance NUMERIC(14,2) NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS reviews(
+  review_id SERIAL PRIMARY KEY,
+  job_id INT NOT NULL REFERENCES jobs(job_id) ON DELETE CASCADE,
+  reviewer_id INT NOT NULL REFERENCES users(user_id) ON DELETE CASCADE,
+  rating INT NOT NULL CHECK (rating BETWEEN 1 AND 5),
+  comment TEXT
+);

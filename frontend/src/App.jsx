@@ -9,10 +9,14 @@ export default function App() {
     const checkApi = async () => {
       try {
         const response = await fetch(`${API_URL}/api/health`)
-        if (!response.ok) throw new Error('API request failed')
-        const data = await response.json()
-        setApiStatus(data.ok ? 'Connected' : 'Unavailable')
-      } catch {
+
+        if (!response.ok) {
+          throw new Error('API request failed')
+        }
+
+        setApiStatus('Connected')
+      } catch (error) {
+        console.error('API connection failed:', error)
         setApiStatus('Unavailable')
       }
     }
@@ -21,9 +25,18 @@ export default function App() {
   }, [])
 
   return (
-    <main style={{ fontFamily: 'system-ui, sans-serif', maxWidth: 900, margin: '0 auto', padding: 40 }}>
+    <main
+      style={{
+        fontFamily: 'system-ui, sans-serif',
+        maxWidth: 900,
+        margin: '0 auto',
+        padding: 40
+      }}
+    >
       <h1>JobSmart.lk</h1>
+
       <p>Sri Lanka's Trusted Digital Work Marketplace</p>
+
       <p>
         Backend API: <strong>{apiStatus}</strong>
       </p>
